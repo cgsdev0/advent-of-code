@@ -58,6 +58,8 @@ function validator() {
   fi
 }
 
+touch sample${PART}.txt solution${PART}.txt
+
 trap "cleanup" EXIT
 while true; do
     sleep 0.1

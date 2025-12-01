@@ -6,27 +6,11 @@ if [[ $DAY -lt 10 ]]; then
 else
   DIR=day$1
 fi
-YEAR=${2:-2024}
+YEAR=${2:-2025}
 
 cd ~/aoc
 mkdir -p "$YEAR/$DIR"
 cd "$YEAR/$DIR"
-
-fetch_examples() {
-  echo "Fetching examples..."
-  local INDEX=1
-  curl -Ss "https://adventofcode.com/$YEAR/day/$DAY" \
-      -H "User-Agent: https://aoc.cgs.dev friendly bash script by s@cgs.dev" \
-      -H "cookie: session=$(cat ~/.aoc)" > puzzle.html
-
-  while IFS= read -r line; do
-    printf "\n\n\n%s" "$line" &> /dev/stderr
-    echo "$line" | jq -r '.example' > sample${INDEX}.txt
-    SOLUTION="$(echo "$line" | jq -r '.solution')"
-    printf "%s" "$SOLUTION" > solution${INDEX}.txt
-    ((INDEX++))
-  done < <(cat puzzle.html | pup 'article' | ~/aoc/misc/claude | tee /dev/stderr | jq -r '.content[0].text' | jq -rc '.[]')
-}
 
 start_part_2() {
   SANITY="$(cat p2.sh | sha256sum | cut -d' ' -f1)"
@@ -34,7 +18,6 @@ start_part_2() {
     echo "Basing p2 on p1 because p2 was blank"
     cp p1.sh p2.sh
   fi
-  fetch_examples
   tmux next-window
   tmux select-pane -t bottom-right
   tmux send-keys C-c
@@ -63,13 +46,10 @@ if [[ ! -f "input.txt" ]]; then
     -H "cookie: session=$(cat ~/.aoc)" > input.txt
 fi
 
-fetch_examples
+touch p1.sh p2.sh sample1.txt solution1.txt sample2.txt solution2.txt
 
 tmux new-window
-tmux send-keys "cd ~/aoc/$YEAR/$DIR; vim p1.sh p2.sh" Enter
-tmux split-window -h
-tmux send-keys "cd ~/aoc/$YEAR/$DIR" Enter
-tmux send-keys "~/aoc/misc/browser $YEAR $DAY" Enter
+tmux send-keys "cd ~/aoc/$YEAR/$DIR; vim p1.sh p2.sh sample1.txt solution1.txt sample2.txt solution2.txt" Enter
 tmux split-window -v
 tmux send-keys "cd ~/aoc/$YEAR/$DIR" Enter
 tmux send-keys "~/aoc/test-runner $YEAR $DAY 1" Enter
