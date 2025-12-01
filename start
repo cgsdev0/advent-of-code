@@ -8,7 +8,8 @@ else
 fi
 YEAR=${2:-2025}
 
-cd ~/aoc
+AOC=~/code/advent-of-code
+cd "$AOC"
 mkdir -p "$YEAR/$DIR"
 cd "$YEAR/$DIR"
 
@@ -19,13 +20,9 @@ start_part_2() {
     cp p1.sh p2.sh
   fi
   tmux next-window
-  tmux select-pane -t bottom-right
+  tmux select-pane -t right
   tmux send-keys C-c
-  tmux send-keys "~/aoc/test-runner $YEAR $DAY 2" Enter
-  tmux select-pane -t top-right
-  tmux send-keys C-c
-  tmux send-keys C-c
-  tmux send-keys C-p Enter
+  tmux send-keys "~/code/advent-of-code/test-runner $YEAR $DAY 2" Enter
   tmux select-pane -t left
 }
 
@@ -49,10 +46,10 @@ fi
 touch p1.sh p2.sh sample1.txt solution1.txt sample2.txt solution2.txt
 
 tmux new-window
-tmux send-keys "cd ~/aoc/$YEAR/$DIR; vim p1.sh p2.sh sample1.txt solution1.txt sample2.txt solution2.txt" Enter
-tmux split-window -v
-tmux send-keys "cd ~/aoc/$YEAR/$DIR" Enter
-tmux send-keys "~/aoc/test-runner $YEAR $DAY 1" Enter
+tmux send-keys "cd $AOC/$YEAR/$DIR; vim p1.sh p2.sh sample1.txt solution1.txt sample2.txt solution2.txt" Enter
+tmux split-window -h
+tmux send-keys "cd $AOC/$YEAR/$DIR" Enter
+tmux send-keys "$AOC/test-runner $YEAR $DAY 1" Enter
 
 echo
 echo

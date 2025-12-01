@@ -33,7 +33,8 @@ cleanup() {
     kill -SIGTERM $PID &> /dev/null
 }
 
-cd ~/aoc/$YEAR/$DIR
+AOC=~/code/advent-of-code
+cd $AOC/$YEAR/$DIR
 
 function validator() {
   local SOLUTION="$(cat $1)"
