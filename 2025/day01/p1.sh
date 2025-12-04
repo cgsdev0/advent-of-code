@@ -2,14 +2,7 @@
 
 FILE="$1"
 
-function running_sum() {
-  dial=50
-  while read num; do
-    dial=$(((dial + num + 100000) % 100))
-    echo $dial
-  done
-}
 cat "$FILE" \
   | tr 'LR' '-+' \
-  | running_sum \
+  | awk 'BEGIN {sum=50} {sum = (sum+$1+100)%100; print sum}' \
   | grep -c '^0$'
