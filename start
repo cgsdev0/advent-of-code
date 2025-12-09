@@ -32,6 +32,8 @@ chmod +x p1.sh p2.sh
 cat <<-EOF | tee p1.sh > p2.sh
 #!/bin/bash
 
+. ../../misc/vardump
+
 FILE="\$1"
 
 cat "\$FILE"
