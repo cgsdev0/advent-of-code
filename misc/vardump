@@ -40,17 +40,20 @@
 #
 # Arguments:
 #   -v                      verbose output
+#   -r                      make negative numbers red lol
 #   -C [always|auto|never]  when to colorize output, defaults to auto
 #
 vardump() {
   # read arguments
   local verbose=false
-  local whencolor='auto'
+  local red=false
+  local whencolor='always'
   local OPTIND OPTARG opt
-  while getopts 'C:v' opt; do
+  while getopts 'C:v:r' opt; do
     case "$opt" in
       C) whencolor=$OPTARG;;
       v) verbose=true;;
+      r) red=true;;
       *) return 1;;
     esac
   done
@@ -66,11 +69,13 @@ vardump() {
 
   # optionally load colors
   if [[ $whencolor == always ]] || [[ $whencolor == auto && -t 1 ]]; then
+    local color_red=$'\e[31m'
     local color_green=$'\e[32m'
     local color_magenta=$'\e[35m'
     local color_rst=$'\e[0m'
     local color_dim=$'\e[2m'
   else
+    local color_red=''
     local color_green=''
     local color_magenta=''
     local color_rst=''
@@ -171,6 +176,11 @@ vardump() {
 
       # always safely quote the value
       value=${value@Q}
+      if $red; then
+        while [[ "$value" =~ (.*)-([0-9]+)(.*) ]]; do
+          value=${BASH_REMATCH[1]}$color_red${BASH_REMATCH[2]}$color_value${BASH_REMATCH[3]}
+        done
+      fi
 
       printf '  [%s]=%s\n' \
           "${color_key}$key${color_rst}" \
