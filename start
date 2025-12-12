@@ -6,7 +6,7 @@ if [[ $DAY -lt 10 ]]; then
 else
   DIR=day$1
 fi
-YEAR=${2:-2025}
+YEAR=${2:-2015}
 
 AOC=~/code/advent-of-code
 cd "$AOC"
