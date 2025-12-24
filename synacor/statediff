@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+FILE_A=$1
+FILE_B=$2
+
+statediff() {
+  nl -v 0 <(paste <(./state $1 saves/$FILE_A) <(./state $1 saves/$FILE_B)) \
+    | tr '\t' ' ' \
+    | tr -s ' ' \
+    | grep -v -E "^ [0-9]+ ([0-9]+) \1$" \
+    | column -t
+}
+
+read PCA < saves/$FILE_A
+read PCB < saves/$FILE_B
+
+echo "PC: $PCA $PCB"
+echo "registers:"
+statediff reg
+echo
+echo "stack:"
+statediff stack
+echo
+echo "mem:"
+statediff mem

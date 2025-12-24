@@ -23,7 +23,7 @@ while IFS= read -r line; do
   else
     echo -e " \033[31mINCORRECT: $line\033[0m"
   fi
-done < <(sort -u codes)
+done < <(sort -u <(cut -d' ' -f1 < codes))
 
 echo " CORRECT: $count / $total"
 echo

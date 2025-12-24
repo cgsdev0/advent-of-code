@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+
+pc="${2:-0}"
+
+mapfile -t mem < <(xxd -c2 -e $1 | cut -d' ' -f2)
+for ((i=0; i<${#mem[@]}; i++)); do
+  mem[i]=$((16#${mem[i]}))
+done
+
+step() {
+  local pc="$1"
+  op=${mem[pc]}
+  va=${mem[pc+1]:-0}
+  ra=$((va-32768))
+  vb=${mem[pc+2]:-0}
+  rb=$((vb-32768))
+  vc=${mem[pc+3]:-0}
+  rc=$((vc-32768))
+  # echo "op: $op"
+  # echo "pc: $pc"
+  case "$op" in
+    0) # halt
+      visited[pc]="halt"
+      ((pc++))
+      queue+=($((pc+1)))
+      ;;
+    1) # set
+      visited[pc]="set $va $vb"
+      ((pc+=3))
+      queue+=($((pc+3)))
+      ;;
+    2) # push
+      visited[pc]="push $va"
+      ((pc+=2))
+      queue+=($((pc+2)))
+      ;;
+    3) # pop
+      visited[pc]="pop $va"
+      ((pc+=2))
+      queue+=($((pc+2)))
+      ;;
+    4) # eq
+      visited[pc]="eq $va $vb $vc"
+      ((pc+=4))
+      queue+=($((pc+4)))
+      ;;
+    5) # gt
+      visited[pc]="gt $va $vb $vc"
+      ((pc+=4))
+      queue+=($((pc+4)))
+      ;;
+    6) # jmp
+      visited[pc]="jmp $va"
+      ((pc+=2))
+      queue+=($((pc+2)))
+      ;;
+    7) # jt
+      visited[pc]="jt $va $vb"
+      ((pc+=3))
+      queue+=($((pc+3)))
+      ;;
+    8) # jf
+      visited[pc]="jf $va $vb"
+      ((pc+=3))
+      queue+=($((pc+3)))
+      ;;
+    9) # add
+      visited[pc]="add $va $vb $vc"
+      ((pc+=4))
+      queue+=($((pc+4)))
+      ;;
+    10) # mult
+      visited[pc]="mult $va $vb $vc"
+      ((pc+=4))
+      queue+=($((pc+4)))
+      ;;
+    11) # mod
+      visited[pc]="mod $va $vb $vc"
+      ((pc+=4))
+      queue+=($((pc+4)))
+      ;;
+    12) # and
+      visited[pc]="and $va $vb $vc"
+      ((pc+=4))
+      queue+=($((pc+4)))
+      ;;
+    13) # or
+      visited[pc]="or $va $vb $vc"
+      ((pc+=4))
+      queue+=($((pc+4)))
+      ;;
+    14) # not
+      visited[pc]="not $va $vb"
+      ((pc+=3))
+      queue+=($((pc+3)))
+      ;;
+    15) # rmem
+      visited[pc]="rmem $va $vb"
+      ((pc+=3))
+      queue+=($((pc+3)))
+      ;;
+    16) # wmem
+      visited[pc]="wmem $va $vb"
+      ((pc+=3))
+      queue+=($((pc+3)))
+      ;;
+    17) # call
+      visited[pc]="call $va"
+      ((pc+=2))
+      queue+=($((pc+2)))
+      ;;
+    18) # ret
+      visited[pc]="ret $va"
+      ((pc+=1))
+      queue+=($((pc+1)))
+      ;;
+    19) # out
+      visited[pc]="out $va"
+      ((pc+=2))
+      queue+=($((pc+2)))
+      ;;
+    20) # in
+      visited[pc]="in $va"
+      ((pc+=2))
+      queue+=($((pc+2)))
+      ;;
+    21) # noop
+      visited[pc]="noop"
+      queue+=($((pc+1)))
+      ;;
+    *)
+      visited[pc]=".data: ${mem[$pc]}"
+      queue+=($((pc+1)))
+      ;;
+  esac
+}
+
+visited=()
+queue=($pc)
+while [[ ${#queue[@]} -gt 0 ]]; do
+  next="${queue[0]}"
+  queue=("${queue[@]:1}")
+  if [[ -n "${visited[$next]}" ]]; then
+    continue
+  fi
+  if [[ -z "${mem[$next]}" ]]; then
+    break
+  fi
+  step "$next"
+done
+
+for key in "${!visited[@]}"; do
+  echo "$key: ${visited[$key]}"
+done

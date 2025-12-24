@@ -7,6 +7,7 @@ stack=()
 pc=0
 input=
 has_input=
+logging=false
 
 load() {
   read pc
@@ -61,13 +62,173 @@ run_cmd() {
       load < "$2"
       echo "loaded!"
       ;;
+    w)
+      echo "mem[$2]=$3"
+      mem[$2]=$3
+      ;;
+    s)
+      echo "stack[$2]=$3"
+      stack[$2]=$3
+      ;;
+    stack)
+      printf '%s\n' "${stack[@]}"
+      ;;
+    log)
+      logging="${2:-true}"
+      ;;
+    reg)
+      if [[ -z "$2" ]]; then
+        echo "${reg[@]}"
+      else
+        echo "${reg[$2]}"
+      fi
+      ;;
+    r)
+      echo "mem[$2]=${mem[$2]}"
+      ;;
+    invhack)
+      mem[2692]=0 # 2339
+      mem[2696]=0 # 2379
+      mem[2700]=0 # 32767
+      mem[2704]=0 # 32767
+      mem[2708]=0 # 2439
+      mem[2712]=0 # 2474
+      mem[2716]=0 # 2495
+      mem[2720]=0 # 2505
+      mem[2724]=0 # 2490
+      mem[2728]=0 # 2500
+      mem[2732]=0 # 2485
+      mem[2736]=0 # 2510
+      mem[2740]=0 # 2645
+      mem[2744]=0 # 2665
+      mem[2748]=0 # 2510
+      mem[2752]=0 # 2575
+      ;;
+    unhack)
+      mem[2692]=2339
+      mem[2696]=2379
+      mem[2700]=32767
+      mem[2704]=32767
+      mem[2708]=2439
+      mem[2712]=2474
+      mem[2716]=2495
+      mem[2720]=2505
+      mem[2724]=2490
+      mem[2728]=2500
+      mem[2732]=2485
+      mem[2736]=2510
+      mem[2740]=2645
+      mem[2744]=2665
+      mem[2748]=2510
+      mem[2752]=2575
+      ;;
     *)
       echo "unknown command '$1'"
       ;;
   esac
 }
 
+indent=
+print() {
+  local pc="$1"
+  echo -n "[$pc] "
+  local op=${mem[pc]}
+  local va=${mem[pc+1]:-0}
+  local ra=$((va-32768))
+  if [[ $va -gt 32767 ]]; then
+    va="<$ra:${reg[ra]}>"
+  fi
+  ra="<$ra>"
+  local vb=${mem[pc+2]:-0}
+  local rb=$((vb-32768))
+  if [[ $vb -gt 32767 ]]; then
+    vb="<$rb:${reg[rb]}>"
+  fi
+  rb="<$rb>"
+  local vc=${mem[pc+3]:-0}
+  local rc=$((vc-32768))
+  if [[ $vc -gt 32767 ]]; then
+    vc="<$rc:${reg[rc]}>"
+  fi
+  rc="<$rc>"
+  echo -n "$indent"
+
+  case "$op" in
+    0) # halt
+      echo "halt"
+      ;;
+    1) # set
+      echo "set $ra $vb"
+      ;;
+    2) # push
+      echo "push $va"
+      ;;
+    3) # pop
+      echo "pop $ra"
+      ;;
+    4) # eq
+      echo "eq $ra $vb $vc"
+      ;;
+    5) # gt
+      echo "gt $ra $vb $vc"
+      ;;
+    6) # jmp
+      echo "jmp $va"
+      ;;
+    7) # jt
+      echo "jt $va $vb"
+      ;;
+    8) # jf
+      echo "jf $va $vb"
+      ;;
+    9) # add
+      echo "add $ra $vb $vc"
+      ;;
+    10) # mult
+      echo "mult $ra $vb $vc"
+      ;;
+    11) # mod
+      echo "mod $ra $vb $vc"
+      ;;
+    12) # and
+      echo "and $ra $vb $vc"
+      ;;
+    13) # or
+      echo "or $ra $vb $vc"
+      ;;
+    14) # not
+      echo "not $ra $vb"
+      ;;
+    15) # rmem
+      echo "rmem $ra $vb"
+      ;;
+    16) # wmem
+      echo "wmem $va $vb"
+      ;;
+    17) # call
+      indent="${indent}  "
+      echo "--call $va"
+      ;;
+    18) # ret
+      indent="${indent:2}"
+      echo "ret"
+      ;;
+    19) # out
+      echo "out $va"
+      ;;
+    20) # in
+      echo "in $ra"
+      ;;
+    21) # noop
+      echo "noop"
+      ;;
+  esac
+}
+
 step() {
+  if $logging; then
+    print "$pc" >> log
+  fi
   op=${mem[pc]}
   va=${mem[pc+1]:-0}
   ra=$((va-32768))

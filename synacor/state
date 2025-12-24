@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+reg=(0 0 0 0 0 0 0 0)
+stack=()
+pc=0
+input=
+has_input=
+
+load() {
+  read pc
+  read -a reg
+  read stack_size
+  unset stack
+  declare -ga stack
+  for((i=0; i<stack_size; i++)); do
+    read num
+    stack+=($num)
+  done
+  read mem_size
+  unset mem
+  declare -ga mem
+  for((i=0; i<=mem_size; i++)); do
+    read num
+    mem+=($num)
+  done
+}
+
+load < "$2"
+
+case "$1" in
+  mem)
+    keys=("${!mem[@]}")
+    mem_size="${keys[-1]}"
+    for((i=0; i<=mem_size; ++i)); do
+      echo "${mem[$i]:-0}"
+    done
+    ;;
+  reg)
+    printf "%s\n" "${reg[@]}"
+    ;;
+  stack)
+    printf '%s\n' "${stack[@]}"
+    ;;
+esac
