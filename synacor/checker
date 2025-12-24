@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+clear
+tput civis
+declare -A valid
+total=0
+while IFS= read -r line; do
+  valid[$line]=1
+  ((total++))
+done < hashes
+
+
+echo
+echo " SYNACOR CHALLENGE"
+echo " ================="
+echo
+
+count=0
+while IFS= read -r line; do
+  hashed=$(echo -n "$line" | md5sum | cut -d' ' -f1)
+  if [[ -n "${valid[$hashed]}" ]]; then
+    ((count++))
+  else
+    echo -e " \033[31mINCORRECT: $line\033[0m"
+  fi
+done < <(sort -u codes)
+
+echo " CORRECT: $count / $total"
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
