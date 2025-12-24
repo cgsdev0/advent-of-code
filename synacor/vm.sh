@@ -92,8 +92,8 @@ run_cmd() {
       echo "mem[$2]=${mem[$2]}"
       ;;
     tphack)
-      reg[7]="$2"
-      mem[5507]=6 # idk
+      reg[7]=25734 # see reg7.cpp
+      mem[5507]=6 # manually specify checksum
       mem[5511]=21 # noop
       mem[5512]=21 # noop
       input="use teleporter"
