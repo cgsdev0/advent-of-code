@@ -80,11 +80,24 @@ run_cmd() {
       if [[ -z "$2" ]]; then
         echo "${reg[@]}"
       else
-        echo "${reg[$2]}"
+        if [[ -z "$3" ]]; then
+          echo "${reg[$2]}"
+        else
+          reg[$2]=$3
+          echo "reg[$2]=$3"
+        fi
       fi
       ;;
     r)
       echo "mem[$2]=${mem[$2]}"
+      ;;
+    tphack)
+      reg[7]="$2"
+      mem[5507]=6 # idk
+      mem[5511]=21 # noop
+      mem[5512]=21 # noop
+      input="use teleporter"
+      has_input=1
       ;;
     invhack)
       mem[2692]=0 # 2339
