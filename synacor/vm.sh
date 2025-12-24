@@ -2,10 +2,6 @@
 
 cd saves
 
-mapfile -t mem < <(xxd -c2 -e challenge.bin | cut -d' ' -f2)
-for ((i=0; i<${#mem[@]}; i++)); do
-  mem[i]=$((16#${mem[i]}))
-done
 reg=(0 0 0 0 0 0 0 0)
 stack=()
 pc=0
@@ -33,6 +29,11 @@ load() {
 
 if [[ -n "$1" ]]; then
   load < "$1"
+else
+  mapfile -t mem < <(xxd -c2 -e ../challenge.bin | cut -d' ' -f2)
+  for ((i=0; i<${#mem[@]}; i++)); do
+    mem[i]=$((16#${mem[i]}))
+  done
 fi
 
 save() {
