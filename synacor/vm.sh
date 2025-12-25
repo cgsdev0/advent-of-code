@@ -62,6 +62,19 @@ run_cmd() {
       load < "$2"
       echo "loaded!"
       ;;
+    room)
+      local v=${mem[2754]}
+      v=$(((v-2399)/5))
+      echo "$v (${mem[2754]})"
+      ;;
+    tp)
+      local i="$2"
+      local v=$((2399+i*5))
+      echo "mem[2754]=$v"
+      echo "mem[2755]=$v"
+      mem[2754]=$v
+      mem[2755]=$v
+      ;;
     w)
       echo "mem[$2]=$3"
       mem[$2]=$3

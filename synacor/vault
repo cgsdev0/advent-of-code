@@ -1,0 +1,35 @@
++--+--+--+--+
+|* |8 |- |1 > DOOR
++--+--+--+--+
+|4 |* |11|* |
++--+--+--+--+
+|+ |4 |- |18|
++--+--+--+--+
+|22|- |9 |* |
+|^ +--+--+--+
+|^ |
+|^ +
+
+door: 30
+
+
+26
+13
+
+22-18
+
+take orb
+go north
+go north (26)
+go south
+go north (30)
+go south
+go north (34)
+go south
+go north (38)
+go south
+go east (42)
+go east
+go north (31)
+go north
+go east (30)
