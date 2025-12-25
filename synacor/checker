@@ -11,6 +11,10 @@ done < hashes
 
 
 echo
+echo
+echo
+echo
+echo
 echo " SYNACOR CHALLENGE"
 echo " ================="
 echo
@@ -25,7 +29,7 @@ while IFS= read -r line; do
   fi
 done < <(sort -u <(cut -d' ' -f1 < codes))
 
-echo " CORRECT: $count / $total"
+echo "  PROGRESS: $count / $total"
 echo
 echo
 echo
