@@ -12,27 +12,27 @@ done < hashes
 
 echo
 echo
+echo "  SYNACOR  OSCON"
+echo "  2012 CHALLENGE"
+echo "  ============== "
 echo
-echo
-echo
-echo " SYNACOR CHALLENGE"
-echo " ================="
-echo
-
+echo -e "  LANG:  BASH"
 count=0
 while IFS= read -r line; do
   hashed=$(echo -n "$line" | md5sum | cut -d' ' -f1)
   if [[ -n "${valid[$hashed]}" ]]; then
     ((count++))
-  else
-    echo -e " \033[31mINCORRECT: $line\033[0m"
+  elif [[ -z "$invalid" ]]; then
+    echo -e "  CODES:\033[31m ERROR\033[0m"
+    ((invalid++))
   fi
 done < <(sort -u <(cut -d' ' -f1 < codes))
 
-echo "  PROGRESS: $count / $total"
+[[ -z "$invalid" ]] && echo -e "  CODES: \033[32m$count / $total\033[0m"
 echo
 echo
 echo
+echo -e "\033[35m (pinned in chat)\033[0m"
 echo
 echo
 echo
