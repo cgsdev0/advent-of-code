@@ -1,0 +1,3 @@
+[submodule "synacor/tinycc"]
+	path = synacor/tinycc
+	url = https://github.com/TinyCC/tinycc.git
