@@ -50,7 +50,8 @@ function validator() {
     if [[ "$BUFFERED" == "$SOLUTION" ]]; then
       green "$BUFFERED"
       echo
-      exec spinner "" ./p${PART}.sh input.txt
+      # exec spinner "" ./p${PART}.sh input.txt
+      ./p${PART}.sh input.txt
     else
       red "$BUFFERED"
     fi
