@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+cd "${0%/*}"
 
 DAY=$1
 if [[ $DAY -lt 10 ]]; then
@@ -8,8 +10,6 @@ else
 fi
 YEAR=${2:-2015}
 
-AOC=~/code/advent-of-code
-cd "$AOC"
 mkdir -p "$YEAR/$DIR"
 cd "$YEAR/$DIR"
 
@@ -30,7 +30,7 @@ touch p1.sh p2.sh
 chmod +x p1.sh p2.sh
 
 cat <<-EOF | tee p1.sh > p2.sh
-#!/bin/bash
+#!/usr/bin/env bash
 
 . ../../misc/vardump
 
