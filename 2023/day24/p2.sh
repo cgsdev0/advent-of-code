@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # all credit due to https://www.reddit.com/r/adventofcode/comments/18qabia/2023_day_24_part_2_3_am_on_a_christmas_morning/
 #

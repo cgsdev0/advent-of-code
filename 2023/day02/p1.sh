@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 cat input.txt \
   | sed 's/blue/> 14/g' \

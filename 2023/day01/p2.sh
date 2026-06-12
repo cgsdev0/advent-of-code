@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # rest in pieces: my sanity
 sed -E 's/(one|two|three|four|five|six|seven|eight|nine)/_\1_\1/' \
