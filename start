@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 cd "${0%/*}"
+AOC=$(pwd)
 
 DAY=$1
 if [[ $DAY -lt 10 ]]; then
@@ -22,7 +23,7 @@ start_part_2() {
   tmux next-window
   tmux select-pane -t right
   tmux send-keys C-c
-  tmux send-keys "~/code/advent-of-code/test-runner $YEAR $DAY 2" Enter
+  tmux send-keys "$AOC/test-runner $YEAR $DAY 2" Enter
   tmux select-pane -t left
 }
 
